@@ -9,3 +9,5 @@ Ova igra je napravljena koriscenjem HTML, CSS i JavaScript tehnologija. Cilj je 
 - Koristite ekran na dodir ili misa za interakciju sa kartama.
 
 Zabavite se!
+Igraj ovde:
+https://mujagi77.github.io/Magicna-Karta/
