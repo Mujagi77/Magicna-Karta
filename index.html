@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="author" content="Mujag77">
+    <title>Magični Trik 21 - Savršeno Fizičko Deljenje</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ffd700;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 3000;
+        }
+
+        body {
+            background: radial-gradient(circle, #1a4c36 0%, #091912 100%);
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 12px 6px;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .info-panel {
+            text-align: center;
+            width: 100%;
+            z-index: 200;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #ffd700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 3px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .instructions {
+            font-family: system-ui, sans-serif;
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            padding: 0 5px;
+            min-height: 38px;
+            line-height: 1.3;
+        }
+
+        .intro-deck-area {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 140px;
+            z-index: 300;
+            transition: opacity 0.5s ease;
+        }
+
+        .columns-container {
+            width: 100%;
+            max-width: 430px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 12px;
+            flex-grow: 1;
+            margin: 8px 0;
+            z-index: 10;
+        }
+
+        .card-column {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 215, 0, 0.05);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .card-column:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .disabled-clicks {
+            pointer-events: none !important;
+            opacity: 0.8;
+        }
+
+        .cards-area {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 38px);
+            min-height: 220px;
+        }
+
+        .card {
+            width: 100%;
+            aspect-ratio: 2.5 / 3.5;
+            background: #ffffff;
+            border-radius: 8px;
+            position: absolute;
+            left: 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            border: 1px solid #888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 10px;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease-out;
+            backface-visibility: hidden;
+            opacity: 1;
+
+            will-change: transform;
+        }
+
+        .card.back {
+            background: #d11a2a;
+            background-image: 
+                radial-gradient(rgba(255,215,0,0.15) 15%, transparent 16%),
+                radial-gradient(rgba(255,215,0,0.15) 15%, transparent 16%),
+                linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05)),
+                linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0.05));
+            background-size: 10px 10px, 10px 10px, 10px 10px, 10px 10px;
+            background-position: 0 0, 5px 5px, 0 0, 5px 5px;
+            border: 3px solid #fff;
+            box-shadow: inset 0 0 0 3px #b21321, inset 0 0 0 4px #ffd700, 0 5px 12px rgba(0,0,0,0.5);
+        }
+
+        .card.back * {
+            display: none !important;
+        }
+
+        .card-inner-border {
+            position: absolute;
+            top: 4px; bottom: 4px; left: 4px; right: 4px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            border-radius: 5px;
+            pointer-events: none;
+        }
+
+        .red { color: #d11a2a; }
+        .black { color: #111111; }
+
+        .card-corner {
+            position: absolute;
+            font-size: 1.1rem;
+            font-weight: bold;
+            line-height: 0.95;
+            text-align: center;
+            letter-spacing: -1px;
+        }
+        .corner-top { top: 6px; left: 6px; }
+        .corner-bottom { bottom: 6px; right: 6px; transform: rotate(180deg); }
+
+        .card-center-illustration {
+            width: 82%;
+            height: 80%;
+            border: 1.5px solid #bba385;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+
+        .card-center-illustration svg { width: 100%; height: 100%; }
+
+        .card-pip-container {
+            width: 75%;
+            height: 78%;
+            position: relative;
+            font-size: 1.4rem;
+            line-height: 1;
+        }
+
+        .pip { position: absolute; transform: translate(-50%, -50%); }
+        .ace-center { font-size: 3.5rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+
+        .col-btn {
+            width: 100%;
+            padding: 8px 2px;
+            background: #1b4433;
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            font-family: system-ui, sans-serif;
+            text-transform: uppercase;
+            margin-top: 0;
+            pointer-events: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card-column:active .col-btn { background: #ffd700; color: #0d1a14; }
+
+        .action-btn {
+            width: 100%;
+            max-width: 250px;
+            padding: 10px;
+            font-family: system-ui, sans-serif;
+            font-size: 0.85rem;
+            background: linear-gradient(180deg, #ffd700 0%, #cca100 100%);
+            border: none;
+            border-radius: 25px;
+            color: #0d1a14;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            z-index: 500;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .action-btn:active { transform: scale(0.96); }
+
+        .reveal-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 18, 13, 0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 40px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        .reveal-screen.active { opacity: 1; pointer-events: auto; }
+
+        .fan-container {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            height: 320px;
+            margin-top: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            overflow: visible;
+        }
+
+        .fanned-card {
+            width: 75px;
+            height: 105px;
+            position: absolute;
+            bottom: 20px;
+            left: calc(50% - 37.5px);
+            transform-origin: bottom center;
+            transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1), bottom 1.2s;
+        }
+
+        .fanned-card.chosen-one {
+            z-index: 2000 !important;
+            animation: ejectAndReveal 1.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes ejectAndReveal {
+            0% { bottom: 20px; }
+            40% { bottom: 160px; transform: scale(1.4) rotate(0deg); }
+            70% { bottom: 130px; transform: scale(2.4) rotate(0deg); }
+            100% { bottom: 120px; transform: scale(2.4) rotate(0deg); box-shadow: 0 0 35px rgba(255, 215, 0, 0.7); }
+        }
+
+        @keyframes riffleLeft {
+            0% { transform: translateX(0) rotate(0deg); }
+            30% { transform: translateX(-110px) translateY(-10px) rotate(-20deg); }
+            60% { transform: translateX(-25px) translateY(0) rotate(-4deg); z-index: 50; }
+            100% { transform: translateX(0) rotate(0deg); }
+        }
+        @keyframes riffleRight {
+            0% { transform: translateX(0) rotate(0deg); }
+            30% { transform: translateX(110px) translateY(-10px) rotate(20deg); }
+            60% { transform: translateX(25px) translateY(0) rotate(4deg); z-index: 40; }
+            100% { transform: translateX(0) rotate(0deg); }
+        }
+
+        .riffle-left { animation: riffleLeft 0.45s ease-in-out 3; }
+        .riffle-right { animation: riffleRight 0.45s ease-in-out 3; }
+        .col-focus {
+            transform: scale(1.05);
+            background: rgba(255, 215, 0, 0.1) !important;
+            border: 1px solid rgba(255, 215, 0, 0.3) !important;
+            transition: all 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="info-panel">
+        <h1>MAGIČNI TRIK 21</h1>
+        <div class="instructions" id="status-text">Špil karata je spreman za zabavu!</div>
+    </div>
+    
+    <div class="intro-deck-area" id="intro-deck"></div>
+
+    <div class="columns-container" id="game-container" style="display: none;">
+        <div class="card-column" id="col-box-0" onclick="selectColumn(0)">
+            <div class="cards-area" id="col-0"></div>
+            <button class="col-btn" style="margin-top: -30px;">U ovoj koloni</button>
+        </div>
+        <div class="card-column" id="col-box-1" onclick="selectColumn(1)">
+            <div class="cards-area" id="col-1"></div>
+            <button class="col-btn" style="margin-top: -30px;">U ovoj koloni</button>
+        </div>
+        <div class="card-column" id="col-box-2" onclick="selectColumn(2)">
+            <div class="cards-area" id="col-2"></div>
+            <button class="col-btn" style="margin-top: -30px;">U ovoj koloni</button>
+        </div>
+    </div>
+
+    <button class="action-btn" id="main-btn" onclick="triggerCinemaShuffle()">Pokreni Trik</button>
+
+    <div class="reveal-screen" id="reveal-screen">
+        <h2 id="reveal-title" style="color: #ffd700; font-size: 1.4rem; font-family: system-ui, sans-serif; text-align:center; min-height:30px;">Pripremam magični rasplet...</h2>
+        <div class="fan-container" id="fan-zone"></div>
+        <button class="action-btn" id="restart-btn" style="margin-top: 25px; margin-bottom: 40px; display:none;" onclick="closeReveal()">Igraj Ponovo</button>
+    </div>
+
+    <script>
+        let audioCtx = null;
+        let musicLoop = null;
+        let isDealing = false;
+        let isShuffling = false; 
+        
+        function startCheerfulMusic() {
+            if (musicLoop) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const majorNotes = [
+                    [261.63, 329.63, 392.00, 523.25], 
+                    [349.23, 440.00, 523.25, 698.46], 
+                    [392.00, 493.88, 587.33, 783.99], 
+                    [261.63, 329.63, 392.00, 493.88]  
+                ];
+                let currentChord = 0;
+                let stepCounter = 0;
+
+                function playJazzStaccatoStep() {
+                    if (!audioCtx || audioCtx.state === 'suspended') return;
+                    const now = audioCtx.currentTime;
+                    const chord = majorNotes[currentChord];
+                    const noteFreq = chord[stepCounter % chord.length];
+                    
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'triangle'; 
+                    osc.frequency.setValueAtTime(noteFreq, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                    
+                    stepCounter++;
+                    if (stepCounter % 4 === 0) {
+                        currentChord = (currentChord + 1) % majorNotes.length;
+                    }
+                }
+                playJazzStaccatoStep();
+                musicLoop = setInterval(playJazzStaccatoStep, 380);
+            } catch (e) { console.log("Audio greška:", e); }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (audioCtx) {
+                if (document.hidden) audioCtx.suspend();
+                else audioCtx.resume();
+            }
+        });
+
+        function drawFigureSVG(value, color, symbol) {
+    const mainColor = (color === 'red') ? '#cc1111' : '#111111';
+    const gold = '#ffd700'; 
+    let figureGraphics = '';
+
+    // Ovde crtaš svoje crteže (tvoj originalni kod za J, Q, K)
+      if (value === 'J') {
+    figureGraphics = `
+        <path d="M25 50 L35 40 L65 40 L75 50 Z" fill="#d11a2a"/>
+        <path d="M30 45 L35 60" stroke="#ffdbac" stroke-width="8" stroke-linecap="round"/> <path d="M70 45 L65 60" stroke="#ffdbac" stroke-width="8" stroke-linecap="round"/> <path d="M20 50 L35 50 L32 70 L23 70 Z" fill="steelblue" stroke="#333"/>
+        <line x1="65" y1="30" x2="65" y2="70" stroke="silver" stroke-width="4"/>
+        <circle cx="50" cy="35" r="12" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+        <path d="M35 25 L65 25 L50 10 Z" fill="${mainColor}" stroke="#333"/>
+    `;
+} else if (value === 'Q') {
+    figureGraphics = `
+        <path d="M25 50 L50 40 L75 50 Z" fill="gold"/>
+        <path d="M30 45 L25 60" stroke="#ffdbac" stroke-width="8" stroke-linecap="round"/>
+        <path d="M70 45 L75 60" stroke="#ffdbac" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="25" cy="65" r="6" fill="pink" stroke="#333"/>
+        <circle cx="50" cy="35" r="12" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+        <path d="M35 20 L40 10 L50 18 L60 10 L65 20 Z" fill="${gold}" stroke="#333"/>
+    `;
+} else if (value === 'K') {
+    figureGraphics = `
+        <path d="M25 50 L50 45 L75 50 Z" fill="purple" stroke="#333"/>
+        <path d="M35 48 L30 65" stroke="#ffdbac" stroke-width="8" stroke-linecap="round"/> <path d="M65 48 L70 65" stroke="#ffdbac" stroke-width="8" stroke-linecap="round"/> <rect x="47" y="40" width="6" height="30" fill="silver" stroke="#333"/>
+        <path d="M40 45 L60 45" stroke="gold" stroke-width="4"/>
+        <circle cx="50" cy="35" r="12" fill="#ffdbac" stroke="#333" stroke-width="1"/>
+        <path d="M35 18 L30 5 L50 15 L70 5 L65 18 Z" fill="${gold}" stroke="#333"/>
+    `;
+}
+
+    // OVO JE SVE ŠTO TI TREBA: 
+    // Crta grafiku, onda rotira, pa na kraju stavlja slovo u beli krug preko svega.
+    return `<svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="140" fill="#fbf9f5"/>
+        <g>${figureGraphics}</g>
+        <g transform="rotate(180 50 70)">${figureGraphics}</g>
+        
+        <circle cx="50" cy="70" r="12" fill="white" stroke="${mainColor}" stroke-width="2"/>
+        <text x="50" y="77" font-size="20" font-weight="bold" fill="${mainColor}" 
+              text-anchor="middle" font-family="Arial, sans-serif" style="pointer-events: none;">
+            ${value}
+        </text>
+    </svg>`;
+}
+
+        function generatePips(value, symbol) {
+            if (value === 'A') return `<div class="ace-center">${symbol}</div>`;
+            let html = `<div class="card-pip-container">`;
+            let coordinates = [];
+            if (value === '7') coordinates = [{x:20,y:15},{x:80,y:15},{x:20,y:50},{x:80,y:50},{x:20,y:85},{x:80,y:85},{x:50,y:32.5}];
+            else if (value === '8') coordinates = [{x:20,y:15},{x:80,y:15},{x:20,y:50},{x:80,y:50},{x:20,y:85},{x:80,y:85},{x:50,y:32.5},{x:50,y:67.5}];
+            else if (value === '9') coordinates = [{x:20,y:15},{x:80,y:15},{x:20,y:38},{x:80,y:38},{x:20,y:62},{x:80,y:62},{x:20,y:85},{x:80,y:85},{x:50,y:50}];
+            else if (value === '10') coordinates = [{x:20,y:15},{x:80,y:15},{x:20,y:38},{x:80,y:38},{x:20,y:62},{x:80,y:62},{x:20,y:85},{x:80,y:85},{x:50,y:26.5},{x:50,y:73.5}];
+            
+            coordinates.forEach(pos => { html += `<span class="pip" style="left: ${pos.x}%; top: ${pos.y}%;">${symbol}</span>`; });
+            html += `</div>`; return html;
+        }
+
+        const signs = ['♥', '♦', '♠', '♣'];
+        const values = ['A', 'K', 'Q', 'J', '10', '9', '8', '7'];
+        let customDeck = [];
+        signs.forEach(s => { values.forEach(v => { customDeck.push({ value: v, symbol: s, color: (s==='♥'||s==='♦')?'red':'black' }); }); });
+
+        let gameDeck = [];
+        let step = 0;
+
+        function initIntroDeck() {
+            const introZone = document.getElementById('intro-deck');
+            introZone.innerHTML = '';
+            introZone.style.opacity = '1';
+            introZone.style.display = 'block';
+
+            for(let i=0; i<12; i++) {
+                const backCard = document.createElement('div');
+                backCard.classList.add('card', 'back');
+                backCard.style.position = 'absolute';
+                backCard.style.top = `${-i * 0.6}px`;
+                backCard.style.left = `${-i * 0.3}px`;
+                backCard.style.zIndex = i;
+                introZone.appendChild(backCard);
+            }
+        }
+
+        function triggerCinemaShuffle() {
+            if (isShuffling) return; 
+            isShuffling = true;
+
+            startCheerfulMusic();
+            if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+            document.getElementById('main-btn').style.display = 'none';
+            document.getElementById('status-text').innerText = "Mešam karte...";
+
+            const introCards = document.querySelectorAll('#intro-deck .card');
+            introCards.forEach((card, idx) => {
+                if(idx % 2 === 0) card.classList.add('riffle-left');
+                else card.classList.add('riffle-right');
+            });
+
+            setTimeout(() => {
+                document.getElementById('intro-deck').style.opacity = '0';
+                setTimeout(() => document.getElementById('intro-deck').style.display = 'none', 500);
+                startGame();
+            }, 1400);
+        }
+
+        function startGame() {
+            document.getElementById('game-container').style.display = 'grid';
+            document.getElementById('status-text').innerHTML = "Zamisli jednu kartu sa ekrana.<br>Zatim klikni na kolonu u kojoj leži!";
+            
+            let shuffled = [...customDeck].sort(() => Math.random() - 0.5);
+            gameDeck = shuffled.slice(0, 21);
+            step = 0;
+            dealCards();
+        }
+
+        function getCardHTML(card) {
+    let centerHTML = (['J', 'Q', 'K'].includes(card.value)) 
+        ? `<div class="card-center-illustration">${drawFigureSVG(card.value, card.color, card.symbol)}</div>`
+        : generatePips(card.value, card.symbol);
+
+    return `
+        <div class="card-inner-border"></div>
+        <div class="card-corner corner-top">${card.value}<br>${card.symbol}</div>
+        ${centerHTML}
+        <div class="card-corner corner-bottom">${card.value}<br>${card.symbol}</div>
+    `;
+}
+
+        function setColumnsClickable(clickable) {
+            for(let i=0; i<3; i++) {
+                const wrapper = document.getElementById(`col-box-${i}`);
+                if(!clickable) wrapper.classList.add('disabled-clicks');
+                else wrapper.classList.remove('disabled-clicks');
+            }
+        }
+
+function dealCards() {
+    isDealing = true;
+    setColumnsClickable(false);
+    document.getElementById('status-text').innerText = "Ređam karte...";
+
+    document.getElementById('col-0').innerHTML = '';
+    document.getElementById('col-1').innerHTML = '';
+    document.getElementById('col-2').innerHTML = '';
+
+    gameDeck.forEach((card, index) => {
+        const colIndex = index % 3; 
+        const colArea = document.getElementById(`col-${colIndex}`);
+        
+        const cardEl = document.createElement('div');
+        cardEl.classList.add('card', card.color);
+        
+        const rowIndex = Math.floor(index / 3);
+        const offset = rowIndex * 12; // Razmak između karata u koloni
+        
+        // Postavljanje početnog stanja za animaciju
+        cardEl.style.top = `${offset}%`;
+        cardEl.style.zIndex = 10 + rowIndex;
+        cardEl.style.opacity = '0';
+        // Karte kreću iznad ekrana, ali sa blagim nagibom
+        cardEl.style.transform = 'translateY(-200px) rotate(-10deg)'; 
+
+        cardEl.innerHTML = getCardHTML(card);
+        colArea.appendChild(cardEl);
+
+        // Animacija "Sletanja na sto"
+        setTimeout(() => {
+            cardEl.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            cardEl.style.transform = 'translateY(0) rotate(0deg)';
+            cardEl.style.opacity = '1';
+            
+            if (navigator.vibrate) navigator.vibrate(5);
+            
+            if(index === 20) {
+                setTimeout(() => {
+                    isDealing = false;
+                    setColumnsClickable(true);
+                }, 800);
+            }
+        }, index * 120); // Brži i dinamičniji niz
+    });
+}
+
+function selectColumn(chosenCol) {
+    if (isDealing) return;
+    setColumnsClickable(false);
+    if (navigator.vibrate) navigator.vibrate(40);
+
+    // 1. Fokusiraj izabranu kolonu
+    const colBoxes = [
+        document.getElementById('col-box-0'), 
+        document.getElementById('col-box-1'), 
+        document.getElementById('col-box-2')
+    ];
+    colBoxes[chosenCol].classList.add('col-focus');
+
+    // 2. Matematička logika trika
+    let col0 = [], col1 = [], col2 = [];
+    gameDeck.forEach((card, index) => {
+        if (index % 3 === 0) col0.push(card);
+        else if (index % 3 === 1) col1.push(card);
+        else col2.push(card);
+    });
+
+    if (chosenCol === 0) gameDeck = [...col1, ...col0, ...col2];
+    else if (chosenCol === 1) gameDeck = [...col0, ...col1, ...col2];
+    else gameDeck = [...col0, ...col2, ...col1];
+
+    // 3. Animacija skupljanja
+    setTimeout(() => {
+        const allCards = document.querySelectorAll('.card');
+        const container = document.getElementById('game-container');
+        const containerRect = container.getBoundingClientRect();
+
+        allCards.forEach((card, idx) => {
+            const cardRect = card.getBoundingClientRect();
+            const targetX = (containerRect.width / 2) - cardRect.left - (cardRect.width / 2);
+            const targetY = (containerRect.top + containerRect.height / 2) - cardRect.top - (cardRect.height / 2);
+            
+            card.style.position = 'absolute';
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.transform = `translate(${targetX}px, ${targetY}px) scale(0.4)`;
+            card.style.opacity = '0';
+            card.style.zIndex = 100 + idx;
+        });
+
+        // 4. Čišćenje nakon animacije
+        setTimeout(() => {
+            allCards.forEach(c => c.remove());
+            // Ukloni fokus sa kolone
+            colBoxes.forEach(box => box.classList.remove('col-focus'));
+            
+            step++;
+            if (step < 3) {
+                document.getElementById('status-text').innerText = "Mešam karte...";
+                dealCards();
+            } else {
+                cinemaRevealSequence();
+            }
+        }, 600);
+    }, 400); 
+}
+
+        function cinemaRevealSequence() {
+    const screen = document.getElementById('reveal-screen');
+    const fanZone = document.getElementById('fan-zone');
+    const title = document.getElementById('reveal-title');
+    const restartBtn = document.getElementById('restart-btn');
+    
+    fanZone.innerHTML = '';
+    restartBtn.style.display = 'none';
+    screen.classList.add('active');
+
+    // Prvi tekst
+    typeEffect(title, "Čitam tvoje misli...");
+
+    gameDeck.forEach((card, idx) => {
+        const fCard = document.createElement('div');
+        fCard.classList.add('card', 'back', 'fanned-card');
+        fCard.style.zIndex = idx;
+        fanZone.appendChild(fCard);
+    });
+
+    setTimeout(() => {
+        typeEffect(title, "Gledaj lepezu magije..."); 
+        const fannedCards = document.querySelectorAll('.fanned-card');
+        fannedCards.forEach((card, idx) => {
+            const rot = ((idx - 10) * 4);
+            const transX = (idx - 10) * 11;
+            card.style.transform = `translateX(${transX}px) rotate(${rot}deg)`;
+        });
+    }, 1500);
+
+    setTimeout(() => {
+        typeEffect(title, "Da li je ovo tvoja karta?");
+        const fannedCards = document.querySelectorAll('.fanned-card');
+        const targetCard = fannedCards[10];
+        
+        targetCard.classList.remove('back');
+        targetCard.classList.add(gameDeck[10].color);
+        targetCard.style.background = '#fff';
+        targetCard.innerHTML = getCardHTML(gameDeck[10]);
+        targetCard.classList.add('chosen-one');
+        createMagicParticles(); 
+
+        targetCard.style.boxShadow = "0 0 50px 15px rgba(255, 215, 0, 0.8)";
+
+        // Efekat "Zlatne prašine" (Confetti)
+        targetCard.style.boxShadow = "0 0 50px 15px rgba(255, 215, 0, 0.8)";
+    }, 3500);
+
+    setTimeout(() => {
+        typeEffect(title, "Magija je stvorena. Pogodio sam.");
+        restartBtn.style.display = 'block';
+    }, 5500);
+}
+
+        function closeReveal() {
+            document.getElementById('reveal-screen').classList.remove('active');
+            document.getElementById('game-container').style.display = 'none';
+            isShuffling = false; 
+            initIntroDeck();
+            document.getElementById('main-btn').style.display = 'block';
+            document.getElementById('status-text').innerText = "Špil karata je spreman za zabavu!";
+        }
+         function typeEffect(element, text, speed = 50) {
+    element.innerHTML = "";
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            let char = text.charAt(i); // Ovde smo definisali 'char'
+            element.innerHTML += (char === " ") ? "&nbsp;" : char;
+            i++;
+            setTimeout(type, speed);
+        }
+    }
+    type();
+}        
+        function createMagicParticles() {
+    for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        document.body.appendChild(p);
+
+        // Nasumičan smer
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 150 + 50;
+        const x = Math.cos(angle) * velocity;
+        const y = Math.sin(angle) * velocity;
+
+        p.style.left = '50%';
+        p.style.top = '50%';
+        
+        p.style.transition = 'all 1s ease-out';
+        setTimeout(() => {
+            p.style.transform = `translate(${x}px, ${y}px) scale(0)`;
+            p.style.opacity = '0';
+        }, 10);
+
+        setTimeout(() => p.remove(), 1000);
+    }
+}
+        function showSignatureFan() {
+    const fanZone = document.getElementById('fan-zone');
+    const screen = document.getElementById('reveal-screen');
+    const title = document.getElementById('reveal-title');
+    
+    screen.classList.add('active');
+    title.innerHTML = "MAGIJA POČINJE...";
+    fanZone.innerHTML = '';
+    
+    const letters = ['M', 'U', 'J', 'A', 'G', 'I', '7', '7'];
+    
+    letters.forEach((char, idx) => {
+        const card = document.createElement('div');
+        card.classList.add('card', 'fanned-card');
+        
+        Object.assign(card.style, {
+            width: '50px',
+            height: '70px',
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.8rem',
+            fontWeight: 'bold',
+            color: '#d11a2a',
+            border: '2px solid #ffd700',
+            position: 'absolute',
+            left: 'calc(50% - 25px)', // OVO JE KLJUČNO: uvek centrira karticu
+            top: '100px',             // pomeri malo naniže da se vidi
+            borderRadius: '5px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+            transformOrigin: 'bottom center' // da se lepeza širi iz jedne tačke
+        });
+        card.innerHTML = char;
+        
+        fanZone.appendChild(card);
+        
+        // Animacija otvaranja
+        setTimeout(() => {
+            const rot = (idx - 3.5) * 13; 
+            const transX = (idx - 3.5) * 30; 
+            card.style.transition = 'transform 0.8s cubic-bezier(0.19, 1, 0.22, 1)';
+            card.style.transform = `translateX(${transX}px) rotate(${rot}deg)`;
+        }, 500);
+    });
+
+    // Skupljanje - Vraćanje u centar (nula)
+    setTimeout(() => {
+        const cards = document.querySelectorAll('.fanned-card');
+        cards.forEach(c => {
+            c.style.transform = `translateX(0) rotate(0deg) scale(0.5)`;
+            c.style.opacity = '0';
+        });
+        
+        setTimeout(() => {
+            screen.classList.remove('active');
+            fanZone.innerHTML = '';
+        }, 1200);
+    }, 3500);
+}
+        window.onload = () => {
+            initIntroDeck();
+            setTimeout(showSignatureFan, 1000); 
+        };
+    </script>
+</body>
+</html>
