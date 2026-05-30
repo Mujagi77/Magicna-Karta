@@ -201,8 +201,11 @@
         }
             
         .fanned-card.chosen-one .card-corner {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
             font-size: 0.55rem;
-            line-height: 0.65;
+            line-height: 1;
         }
 
         .pip { position: absolute; transform: translate(-50%, -50%); }
@@ -444,8 +447,6 @@
     `;
 }
 
-    // OVO JE SVE ŠTO TI TREBA: 
-    // Crta grafiku, onda rotira, pa na kraju stavlja slovo u beli krug preko svega.
     return `<svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
         <rect width="100" height="140" fill="#fbf9f5"/>
         <g>${figureGraphics}</g>
@@ -567,19 +568,16 @@ function dealCards() {
         cardEl.classList.add('card', card.color);
         
         const rowIndex = Math.floor(index / 3);
-        const offset = rowIndex * 12; // Razmak između karata u koloni
+        const offset = rowIndex * 12;
         
-        // Postavljanje početnog stanja za animaciju
         cardEl.style.top = `${offset}%`;
         cardEl.style.zIndex = 10 + rowIndex;
         cardEl.style.opacity = '0';
-        // Karte kreću iznad ekrana, ali sa blagim nagibom
         cardEl.style.transform = 'translateY(-200px) rotate(-10deg)'; 
 
         cardEl.innerHTML = getCardHTML(card);
         colArea.appendChild(cardEl);
 
-        // Animacija "Sletanja na sto"
         setTimeout(() => {
             cardEl.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             cardEl.style.transform = 'translateY(0) rotate(0deg)';
@@ -593,7 +591,7 @@ function dealCards() {
                     setColumnsClickable(true);
                 }, 800);
             }
-        }, index * 120); // Brži i dinamičniji niz
+        }, index * 120);
     });
 }
 
@@ -602,7 +600,6 @@ function selectColumn(chosenCol) {
     setColumnsClickable(false);
     if (navigator.vibrate) navigator.vibrate(40);
 
-    // 1. Fokusiraj izabranu kolonu
     const colBoxes = [
         document.getElementById('col-box-0'), 
         document.getElementById('col-box-1'), 
@@ -610,7 +607,6 @@ function selectColumn(chosenCol) {
     ];
     colBoxes[chosenCol].classList.add('col-focus');
 
-    // 2. Matematička logika trika
     let col0 = [], col1 = [], col2 = [];
     gameDeck.forEach((card, index) => {
         if (index % 3 === 0) col0.push(card);
@@ -622,7 +618,6 @@ function selectColumn(chosenCol) {
     else if (chosenCol === 1) gameDeck = [...col0, ...col1, ...col2];
     else gameDeck = [...col0, ...col2, ...col1];
 
-    // 3. Animacija skupljanja
     setTimeout(() => {
         const allCards = document.querySelectorAll('.card');
         const container = document.getElementById('game-container');
@@ -640,10 +635,8 @@ function selectColumn(chosenCol) {
             card.style.zIndex = 100 + idx;
         });
 
-        // 4. Čišćenje nakon animacije
         setTimeout(() => {
             allCards.forEach(c => c.remove());
-            // Ukloni fokus sa kolone
             colBoxes.forEach(box => box.classList.remove('col-focus'));
             
             step++;
@@ -667,7 +660,6 @@ function selectColumn(chosenCol) {
     restartBtn.style.display = 'none';
     screen.classList.add('active');
 
-    // Prvi tekst
     typeEffect(title, "Čitam tvoje misli...");
 
     gameDeck.forEach((card, idx) => {
@@ -701,7 +693,6 @@ function selectColumn(chosenCol) {
 
         targetCard.style.boxShadow = "0 0 50px 15px rgba(255, 215, 0, 0.8)";
 
-        // Efekat "Zlatne prašine" (Confetti)
         targetCard.style.boxShadow = "0 0 50px 15px rgba(255, 215, 0, 0.8)";
     }, 3500);
 
@@ -724,7 +715,7 @@ function selectColumn(chosenCol) {
     let i = 0;
     function type() {
         if (i < text.length) {
-            let char = text.charAt(i); // Ovde smo definisali 'char'
+            let char = text.charAt(i);
             element.innerHTML += (char === " ") ? "&nbsp;" : char;
             i++;
             setTimeout(type, speed);
@@ -737,8 +728,7 @@ function selectColumn(chosenCol) {
         const p = document.createElement('div');
         p.className = 'particle';
         document.body.appendChild(p);
-
-        // Nasumičan smer
+        
         const angle = Math.random() * Math.PI * 2;
         const velocity = Math.random() * 150 + 50;
         const x = Math.cos(angle) * velocity;
@@ -783,17 +773,16 @@ function selectColumn(chosenCol) {
             color: '#d11a2a',
             border: '2px solid #ffd700',
             position: 'absolute',
-            left: 'calc(50% - 25px)', // OVO JE KLJUČNO: uvek centrira karticu
-            top: '100px',             // pomeri malo naniže da se vidi
+            left: 'calc(50% - 25px)',
+            top: '100px',             
             borderRadius: '5px',
             boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
-            transformOrigin: 'bottom center' // da se lepeza širi iz jedne tačke
+            transformOrigin: 'bottom center' 
         });
         card.innerHTML = char;
         
         fanZone.appendChild(card);
         
-        // Animacija otvaranja
         setTimeout(() => {
             const rot = (idx - 3.5) * 13; 
             const transX = (idx - 3.5) * 30; 
@@ -802,7 +791,6 @@ function selectColumn(chosenCol) {
         }, 500);
     });
 
-    // Skupljanje - Vraćanje u centar (nula)
     setTimeout(() => {
         const cards = document.querySelectorAll('.fanned-card');
         cards.forEach(c => {
